@@ -5,6 +5,7 @@
 
 #include "../Simulation/Planet.hpp"
 #include "../Simulation/Quad.hpp"
+#include "../Simulation/Node.hpp"
 
 class Sandbox
 {
@@ -20,4 +21,5 @@ private :
 	float m_maxForce;
 
 	Quad m_globalRoot;
+	Node m_root;
 };

@@ -1,4 +1,7 @@
 #pragma once
+#include <memory>
+#include <vector>
+
 #include <SFML/System.hpp>
 
 #include "Quad.hpp"
@@ -16,8 +19,10 @@ public :
 	Planet* planet;
 	Quad quad;
 
-	Node* nw;
-	Node* ne;
-	Node* sw;
-	Node* se;
+	std::vector<Quad*> quadTree;
+
+	std::unique_ptr<Node> nw;
+	std::unique_ptr<Node> ne;
+	std::unique_ptr<Node> sw;
+	std::unique_ptr<Node> se;
 };

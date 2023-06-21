@@ -7,7 +7,7 @@ Quad::Quad(sf::Vector2f position, sf::Vector2f size)
 	this->construct();
 }
 
-void Quad::construct()
+void Quad::construct() noexcept
 {
 	vertices = sf::VertexArray(sf::LineStrip, 5);
 	vertices[0] = sf::Vertex(position, sf::Color::White);

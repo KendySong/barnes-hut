@@ -49,6 +49,13 @@ void Sandbox::update(float deltaTime)
 	m_globalRoot.size.x = m_globalRoot.size.x - m_globalRoot.position.x;
 	m_globalRoot.size.y = m_globalRoot.size.y - m_globalRoot.position.y;
 	m_globalRoot.construct();
+	
+	//Generate the quadtree
+	m_root = Node(m_globalRoot);
+	for (auto& planet : m_planets)
+	{
+		m_root.insert(&planet);
+	}
 
 	//Compute movements
 	for (auto& planet : m_planets)
@@ -69,8 +76,6 @@ void Sandbox::update(float deltaTime)
 
 		planet.body.setPosition(planetPos + planet.velocity * deltaTime);
 	}
-
-	
 }
 
 void Sandbox::draw() noexcept
@@ -79,7 +84,11 @@ void Sandbox::draw() noexcept
 	{
 		p_window->draw(planet.body);
 	}
-	p_window->draw(m_globalRoot.vertices);
+	p_window->draw(m_root.quad.vertices);
+	for (auto& node : m_root.quadTree)
+	{
+		p_window->draw(node->vertices);
+	}
 
 	ImGui::Begin("Debug");
 		ImGui::DragFloat("Force limit", &m_maxForce);
