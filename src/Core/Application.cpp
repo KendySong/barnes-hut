@@ -33,7 +33,6 @@ int Application::run()
 			{
 				p_window->close();
 				ImGui::SFML::Shutdown();
-
 			}
 		}
 

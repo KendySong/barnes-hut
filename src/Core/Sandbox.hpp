@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "../Simulation/Planet.hpp"
+#include "../Simulation/Quad.hpp"
 
 class Sandbox
 {
@@ -17,4 +18,6 @@ private :
 	std::vector<Planet> m_planets;
 	float m_gravity;
 	float m_maxForce;
+
+	Quad m_globalRoot;
 };
