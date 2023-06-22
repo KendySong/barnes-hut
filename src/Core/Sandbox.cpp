@@ -13,8 +13,8 @@
 Sandbox::Sandbox(sf::RenderWindow* window)
 {
 	p_window = window;
-	m_gravity = 1;
-	m_maxForce = 1;
+	m_gravity = 500;
+	m_maxForce = 0.01;
 	m_useBarneHut = true;
 
 	srand(time(nullptr));
