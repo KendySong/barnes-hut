@@ -1,4 +1,5 @@
 #include "Node.hpp"
+#include "VertexQuadTree.hpp"
 
 Node::Node(Quad quad)
 {
@@ -33,6 +34,11 @@ void Node::insert(Planet* planet)
 		ne = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(childSize.x, 0), childSize }));
 		sw = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(0, childSize.y), childSize }));
 		se = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(childSize.x, childSize.y), childSize }));
+		
+		VertexQuadTree::instance()->quads.push_back(nw->quad.vertices);
+		VertexQuadTree::instance()->quads.push_back(ne->quad.vertices);
+		VertexQuadTree::instance()->quads.push_back(sw->quad.vertices);
+		VertexQuadTree::instance()->quads.push_back(se->quad.vertices);
 
 		this->insertQuadrant(this->planet);
 		this->insertQuadrant(planet);
@@ -109,29 +115,4 @@ void Node::traverse(std::vector<Planet*>* planets, Node* node)
 	Node::traverse(planets, node->ne.get());
 	Node::traverse(planets, node->sw.get());
 	Node::traverse(planets, node->se.get());
-}
-
-std::vector<sf::VertexArray*>* Node::getQuads(Node* node)
-{
-	std::vector<sf::VertexArray*>* quads = new std::vector<sf::VertexArray*>();
-	Node::traverse(quads, node);
-	return quads;
-}
-
-void Node::traverse(std::vector<sf::VertexArray*>* quads, Node* node)
-{
-	if (node == nullptr)
-	{
-		return;
-	}
-
-	if (node->planet != nullptr)
-	{
-		quads->push_back(&node->quad.vertices);
-	}
-
-	Node::traverse(quads, node->nw.get());
-	Node::traverse(quads, node->ne.get());
-	Node::traverse(quads, node->sw.get());
-	Node::traverse(quads, node->se.get());
 }

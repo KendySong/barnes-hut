@@ -7,6 +7,7 @@
 #include "../Math/Math.hpp"
 #include "../Simulation/Quad.hpp"
 #include "../Simulation/Node.hpp"
+#include "../Simulation/VertexQuadTree.hpp"
 #include "../Config.hpp"
 
 Sandbox::Sandbox(sf::RenderWindow* window)
@@ -55,6 +56,7 @@ void Sandbox::update(float deltaTime)
 
 		//Generate the quadtree
 		m_root = Node(m_globalRoot);
+		VertexQuadTree::instance()->quads.clear();
 		for (auto& planet : m_planets)
 		{
 			m_root.insert(&planet);
@@ -110,10 +112,10 @@ void Sandbox::draw() noexcept
 	{
 		p_window->draw(m_root.quad.vertices);
 
-		auto quads = Node::getQuads(&m_root);
-		for (size_t i = 0; i < quads->size(); i++)
+		const auto& quads = VertexQuadTree::instance()->quads;
+		for (size_t i = 0; i < quads.size(); i++)
 		{
-			p_window->draw(*(*quads)[i]);
+			p_window->draw(quads[i]);
 		}
 	}
 
