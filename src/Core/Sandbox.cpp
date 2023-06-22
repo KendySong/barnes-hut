@@ -22,10 +22,7 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
 		m_planets.emplace_back(
-			sf::Vector2f(
-				Math::random(WIDTH / 2 / 2, WIDTH / 2 + WIDTH / 2 / 2),
-				Math::random(HEIGHT / 2 / 2, HEIGHT / 2 + HEIGHT / 2 / 2)
-			), 
+			Math::randomCircle(100) += sf::Vector2f(WIDTH / 2, HEIGHT / 2),
 			5
 		);
 	}
@@ -35,7 +32,7 @@ void Sandbox::update(float deltaTime)
 {
 	if (m_useBarneHut)
 	{
-		//Compute position and size of the global quad
+		//Compute limits of the root node
 		m_globalRoot.position = m_planets[0].body.getPosition();
 		m_globalRoot.size = m_planets[0].body.getSize();
 		for (auto& planet : m_planets)
@@ -50,8 +47,14 @@ void Sandbox::update(float deltaTime)
 			m_globalRoot.size.y = m_globalRoot.size.y < position->y + size->y ? position->y + size->y : m_globalRoot.size.y;
 		}
 
+		//Compute real size
 		m_globalRoot.size.x = m_globalRoot.size.x - m_globalRoot.position.x;
 		m_globalRoot.size.y = m_globalRoot.size.y - m_globalRoot.position.y;
+
+		//Transform quadtree border to square
+		m_globalRoot.size.x = m_globalRoot.size.x > m_globalRoot.size.y ? m_globalRoot.size.x : m_globalRoot.size.y;
+		m_globalRoot.size.y = m_globalRoot.size.y > m_globalRoot.size.x ? m_globalRoot.size.y : m_globalRoot.size.x;
+
 		m_globalRoot.construct();
 
 		//Generate the quadtree
@@ -62,7 +65,7 @@ void Sandbox::update(float deltaTime)
 			m_root.insert(&planet);
 		}
 
-		//Compute movements
+		/*
 		for (auto& planet : m_planets)
 		{
 			sf::Vector2f planetPos = planet.body.getPosition();
@@ -81,10 +84,10 @@ void Sandbox::update(float deltaTime)
 
 			planet.body.setPosition(planetPos + planet.velocity * deltaTime);
 		}
+		*/
 	}
 	else
 	{
-		//Compute movements
 		for (auto& planet : m_planets)
 		{
 			sf::Vector2f planetPos = planet.body.getPosition();

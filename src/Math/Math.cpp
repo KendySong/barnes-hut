@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 #include <cmath>
 
 #include "Math.hpp"
@@ -23,4 +24,11 @@ float Math::random(float min, float max) noexcept
 	float delta = max - min;
 	float r = random * delta;
 	return min + r;
+}
+
+sf::Vector2f Math::randomCircle(float radius) noexcept
+{
+	float theta = Math::random(0, 2 * M_PI);
+	float length = Math::random(0, radius);
+	return { cos(theta) * length, sin(theta) * length };
 }
