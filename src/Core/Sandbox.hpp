@@ -20,6 +20,7 @@ private :
 	float m_gravity;
 	float m_maxForce;
 
+	bool m_useBarneHut;
 	Quad m_globalRoot;
 	Node m_root;
 };

@@ -16,3 +16,8 @@ void Quad::construct() noexcept
 	vertices[3] = sf::Vertex(position + sf::Vector2f(0, size.y), sf::Color::White);
 	vertices[4] = sf::Vertex(position, sf::Color::White);
 }
+
+bool Quad::contain(sf::Vector2f point) noexcept
+{
+	return point.x >= position.x && point.x <= position.x + size.x && point.y >= position.y && point.y <= position.y + size.y;
+}
