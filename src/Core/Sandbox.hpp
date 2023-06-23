@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "Camera.hpp"
+
 #include "../Simulation/Planet.hpp"
 #include "../Simulation/Quad.hpp"
 #include "../Simulation/Node.hpp"
@@ -16,6 +18,7 @@ public :
 
 private :
 	sf::RenderWindow* p_window;
+	Camera m_camera;
 	std::vector<Planet> m_planets;
 	float m_gravity;
 	float m_maxForce;

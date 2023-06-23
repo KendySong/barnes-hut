@@ -8,5 +8,5 @@ public :
 
 	float mass;
 	sf::Vector2f velocity;
-	sf::RectangleShape body;
+	sf::VertexArray body;
 };

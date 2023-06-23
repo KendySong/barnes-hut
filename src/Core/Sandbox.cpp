@@ -17,34 +17,38 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	m_maxForce = 0.01;
 	m_useBarneHut = true;
 
+	m_camera = Camera(500, sf::Vector2f(WIDTH / 2, HEIGHT / 2));
+
 	srand(time(nullptr));
 	m_planets.reserve(PLANETS_SPAWN);
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
 		m_planets.emplace_back(
 			Math::randomCircle(100) += sf::Vector2f(WIDTH / 2, HEIGHT / 2),
-			5
+			3
 		);
 	}
 }
 
 void Sandbox::update(float deltaTime)
 {
+	m_camera.manageMovements(deltaTime);
+
 	if (m_useBarneHut)
 	{
 		//Compute limits of the root node
-		m_globalRoot.position = m_planets[0].body.getPosition();
-		m_globalRoot.size = m_planets[0].body.getSize();
+		m_globalRoot.position = m_planets[0].body[0].position;
+		m_globalRoot.size = m_planets[0].body[0].position;
 		for (auto& planet : m_planets)
 		{
-			const sf::Vector2f* position = &planet.body.getPosition();
-			const sf::Vector2f* size = &planet.body.getSize();
+			const sf::Vector2f& position = planet.body[0].position;
+			const sf::Vector2f& size = planet.body[0].position;
 
-			m_globalRoot.position.x = m_globalRoot.position.x > position->x ? position->x : m_globalRoot.position.x;
-			m_globalRoot.position.y = m_globalRoot.position.y > position->y ? position->y : m_globalRoot.position.y;
+			m_globalRoot.position.x = m_globalRoot.position.x > position.x ? position.x : m_globalRoot.position.x;
+			m_globalRoot.position.y = m_globalRoot.position.y > position.y ? position.y : m_globalRoot.position.y;
 
-			m_globalRoot.size.x = m_globalRoot.size.x < position->x + size->x ? position->x + size->x : m_globalRoot.size.x;
-			m_globalRoot.size.y = m_globalRoot.size.y < position->y + size->y ? position->y + size->y : m_globalRoot.size.y;
+			m_globalRoot.size.x = m_globalRoot.size.x < position.x + size.x ? position.x + size.x : m_globalRoot.size.x;
+			m_globalRoot.size.y = m_globalRoot.size.y < position.y + size.y ? position.y + size.y : m_globalRoot.size.y;
 		}
 
 		//Compute real size
@@ -54,7 +58,6 @@ void Sandbox::update(float deltaTime)
 		//Transform quadtree border to square
 		m_globalRoot.size.x = m_globalRoot.size.x > m_globalRoot.size.y ? m_globalRoot.size.x : m_globalRoot.size.y;
 		m_globalRoot.size.y = m_globalRoot.size.y > m_globalRoot.size.x ? m_globalRoot.size.y : m_globalRoot.size.x;
-
 		m_globalRoot.construct();
 
 		//Generate the quadtree
@@ -68,7 +71,7 @@ void Sandbox::update(float deltaTime)
 		/*
 		for (auto& planet : m_planets)
 		{
-			sf::Vector2f planetPos = planet.body.getPosition();
+			sf::Vector2f planetPos = planet.body[0].position;
 			for (auto& target : m_planets)
 			{
 				if (&planet == &target)
@@ -76,13 +79,13 @@ void Sandbox::update(float deltaTime)
 					continue;
 				}
 
-				sf::Vector2f targetPos = target.body.getPosition();
+				sf::Vector2f targetPos = target.body[0].position;
 				float force = (planet.mass * target.mass) / std::pow(Math::distance(planetPos, targetPos), 2) * m_gravity;
 				force = force > m_maxForce ? m_maxForce : force;
 				planet.velocity += Math::unit(targetPos - planetPos) * force;
 			}
 
-			planet.body.setPosition(planetPos + planet.velocity * deltaTime);
+			planet.body[0].position = planetPos + planet.velocity * deltaTime;
 		}
 		*/
 	}
@@ -90,7 +93,7 @@ void Sandbox::update(float deltaTime)
 	{
 		for (auto& planet : m_planets)
 		{
-			sf::Vector2f planetPos = planet.body.getPosition();
+			sf::Vector2f planetPos = planet.body[0].position;
 			for (auto& target : m_planets)
 			{
 				if (&planet == &target)
@@ -98,19 +101,21 @@ void Sandbox::update(float deltaTime)
 					continue;
 				}
 
-				sf::Vector2f targetPos = target.body.getPosition();
+				sf::Vector2f targetPos = target.body[0].position;
 				float force = (planet.mass * target.mass) / std::pow(Math::distance(planetPos, targetPos), 2) * m_gravity;
 				force = force > m_maxForce ? m_maxForce : force;
 				planet.velocity += Math::unit(targetPos - planetPos) * force;
 			}
 
-			planet.body.setPosition(planetPos + planet.velocity * deltaTime);
+			planet.body[0].position = planetPos + planet.velocity / planet.mass * deltaTime;
 		}
 	}	
 }
 
 void Sandbox::draw() noexcept
 {
+	p_window->setView(m_camera.getView());
+	
 	if (m_useBarneHut)
 	{
 		p_window->draw(m_root.quad.vertices);

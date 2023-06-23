@@ -51,22 +51,22 @@ void Node::insert(Planet* planet)
 
 void Node::insertQuadrant(Planet* planet)
 {
-	if (nw.get()->quad.contain(planet->body.getPosition()))
+	if (nw.get()->quad.contain(planet->body[0].position))
 	{
 		nw.get()->insert(planet);
 	}
 
-	if (ne.get()->quad.contain(planet->body.getPosition()))
+	if (ne.get()->quad.contain(planet->body[0].position))
 	{
 		ne.get()->insert(planet);
 	}
 
-	if (sw.get()->quad.contain(planet->body.getPosition()))
+	if (sw.get()->quad.contain(planet->body[0].position))
 	{
 		sw.get()->insert(planet);
 	}
 
-	if (se.get()->quad.contain(planet->body.getPosition()))
+	if (se.get()->quad.contain(planet->body[0].position))
 	{
 		se.get()->insert(planet);
 	}
@@ -82,7 +82,7 @@ void Node::updateMassPosition()
 	for (size_t i = 0; i < planets->size(); i++)
 	{
 		this->mass += (*planets)[i]->mass;
-		const sf::Vector2f& position = (*planets)[i]->body.getPosition();
+		const sf::Vector2f& position = (*planets)[i]->body[0].position;
 		
 		averagePosition.x += position.x * (*planets)[i]->mass;
 		averagePosition.y += position.y * (*planets)[i]->mass;

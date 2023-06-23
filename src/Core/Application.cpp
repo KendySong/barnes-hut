@@ -41,7 +41,7 @@ int Application::run()
 		sandbox.update(m_deltaTime.asSeconds());
 		m_deltaClock.restart();
 
-		p_window->clear();	
+		p_window->clear();
 		sandbox.draw();
 		ImGui::SFML::Render(*p_window);
 		p_window->display();

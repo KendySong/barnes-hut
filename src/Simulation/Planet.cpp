@@ -4,9 +4,9 @@
 
 Planet::Planet(sf::Vector2f position, float mass)
 {
-	body = sf::RectangleShape(sf::Vector2f(2, 2));
-	body.setFillColor(sf::Color::Red);
-	body.setPosition(position);
+	body = sf::VertexArray(sf::Points, 1);
+	body[0].color = sf::Color::Red;
+	body[0].position = position;
 	this->velocity = sf::Vector2f(
 		Math::random(-1, 1), 
 		0
