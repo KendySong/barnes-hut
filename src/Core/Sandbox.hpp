@@ -17,8 +17,14 @@ public :
 	void draw() noexcept;
 
 private :
-	sf::RenderWindow* p_window;
 	Camera m_camera;
+	sf::RenderWindow* p_window;
+	
+	std::string m_nbPlanets;
+	std::uint32_t m_fps;
+	std::string m_fpsText;
+	sf::Clock m_fpsInterval;
+
 	std::vector<Planet> m_planets;
 	float m_gravity;
 	float m_maxForce;
