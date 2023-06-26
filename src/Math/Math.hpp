@@ -10,4 +10,5 @@ public :
 	static float random(float min, float max) noexcept;
 
 	static sf::Vector2f randomCircle(float radius) noexcept;
+	static float interpolate(float a, float b, float t) noexcept;
 };

@@ -32,3 +32,8 @@ sf::Vector2f Math::randomCircle(float radius) noexcept
 	float length = Math::random(0, radius);
 	return { cos(theta) * length, sin(theta) * length };
 }
+
+float Math::interpolate(float a, float b, float t) noexcept
+{
+	return (b - a) * t + a;
+}

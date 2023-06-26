@@ -25,7 +25,7 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	{
 		m_planets.emplace_back(
 			Math::randomCircle(100) += sf::Vector2f(WIDTH / 2, HEIGHT / 2),
-			3
+			1, 5
 		);
 	}
 }
@@ -142,7 +142,7 @@ void Sandbox::draw() noexcept
 		ImGui::TextUnformatted(m_fpsText.c_str());
 		ImGui::TextUnformatted(m_nbPlanets.c_str());
 		ImGui::Checkbox("Use BarnesHut", &m_useBarneHut);
-		ImGui::DragFloat("Force limit", &m_maxForce);
-		ImGui::DragFloat("Gravity", &m_gravity);
+		ImGui::DragFloat("Force limit", &m_maxForce, 0.01f);
+		ImGui::DragFloat("Gravity", &m_gravity, 0.1f);
 	ImGui::End();
 }
