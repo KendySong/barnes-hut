@@ -14,13 +14,17 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	m_gravity = GRAVITY;
 	m_maxForce = MAX_FORCE;
 	m_useBarneHut = true;
+	sf::Vector2f midScreen = sf::Vector2f(WIDTH / 2, HEIGHT / 2);
 
 	m_fps = 0;
-	m_camera = Camera(500, sf::Vector2f(WIDTH / 2, HEIGHT / 2));
+	m_camera = Camera(500, midScreen);
 	m_nbPlanets = "Planets : " + std::to_string(PLANETS_SPAWN);
 
 	srand(time(nullptr));
 	m_planets.reserve(PLANETS_SPAWN);
+	Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);
+
+	/*
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
 		m_planets.emplace_back(
@@ -28,6 +32,7 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 			1, 5
 		);
 	}
+	*/	
 }
 
 void Sandbox::update(float deltaTime)

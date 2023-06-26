@@ -8,6 +8,7 @@
 #include "../Simulation/Planet.hpp"
 #include "../Simulation/Quad.hpp"
 #include "../Simulation/Node.hpp"
+#include "../Simulation/Galaxy.hpp"
 
 class Sandbox
 {

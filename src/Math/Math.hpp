@@ -12,3 +12,5 @@ public :
 	static sf::Vector2f randomCircle(float radius) noexcept;
 	static float interpolate(float a, float b, float t) noexcept;
 };
+
+sf::Vector2f operator*(sf::Vector2f v, float t);

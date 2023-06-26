@@ -37,3 +37,8 @@ float Math::interpolate(float a, float b, float t) noexcept
 {
 	return (b - a) * t + a;
 }
+
+sf::Vector2f operator*(sf::Vector2f v, float t)
+{
+	return { v.x * t, v.y * t };
+}
