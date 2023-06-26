@@ -22,8 +22,8 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 
 	srand(time(nullptr));
 	m_planets.reserve(PLANETS_SPAWN);
-	Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);
-
+	Galaxy galaxy(midScreen - sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
+	Galaxy galaxy2(midScreen + sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
 	/*
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
@@ -127,7 +127,6 @@ void Sandbox::update(float deltaTime)
 void Sandbox::draw() noexcept
 {
 	p_window->setView(m_camera.getView());
-	
 	if (m_useBarneHut)
 	{
 		p_window->draw(m_globalRoot.vertices);

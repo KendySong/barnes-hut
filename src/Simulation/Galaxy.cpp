@@ -11,12 +11,11 @@ Galaxy::Galaxy(sf::Vector2f position, float size, std::uint32_t nbPlanets, std::
 	{
 		float length = Math::random(0, size);
 		float angle = Math::random(0, 2 * M_PI);
-		Planet planet(sf::Vector2f(cos(angle) * length, sin(angle) * length) + position, 10);
+		Planet planet(sf::Vector2f(cos(angle) * length, sin(angle) * length) + position, 10, 50);
 
-		angle -= M_PI_4;
-		sf::Vector2f targetDir = sf::Vector2f(cos(angle) * length, sin(angle) * length) + position;
-		planet.velocity = Math::unit(targetDir - position) * 1500;
-
+		angle -= M_PI_2;
+		sf::Vector2f targetDir = sf::Vector2f(cos(angle), sin(angle)) + position;
+		planet.velocity = Math::unit(targetDir - position) * 2500;
 		planets.push_back(planet);
 	}
 }
