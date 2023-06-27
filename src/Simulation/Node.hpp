@@ -15,6 +15,9 @@ public :
 	void insert(Planet* planet);
 	void insertQuadrant(Planet* planet);
 	void updateMassPosition();
+
+private :
+	void getChildPlanet(Node* node, std::vector<Planet*>& planets);
 	
 public :
 	float mass;

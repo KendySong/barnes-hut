@@ -82,5 +82,38 @@ void Node::insertQuadrant(Planet* planet)
 
 void Node::updateMassPosition()
 {
+	this->mass = 0;
+	this->position = sf::Vector2f(0, 0);
+
+	std::vector<Planet*> planets;
+	this->getChildPlanet(this, planets);
+	for (auto& planet : planets)
+	{
+		this->mass += planet->mass;
+	}
+
+	for (auto& planet : planets)
+	{
+		this->position += planet->body[0].position * planet->mass;
+	}
+
+	this->position /= this->mass;
+}
+
+void Node::getChildPlanet(Node* node, std::vector<Planet*>& planets)
+{
+	if (node == nullptr)
+	{
+		return;
+	}
+
+	if (node->planet != nullptr)
+	{
+		planets.push_back(node->planet);
+	}
 	
+	this->getChildPlanet(node->nw.get(), planets);
+	this->getChildPlanet(node->ne.get(), planets);
+	this->getChildPlanet(node->sw.get(), planets);
+	this->getChildPlanet(node->se.get(), planets);
 }

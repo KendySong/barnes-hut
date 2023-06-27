@@ -8,7 +8,7 @@ Planet::Planet(sf::Vector2f position, float mass)
 	body[0].color = sf::Color::Red;
 	body[0].position = position;
 	this->velocity = sf::Vector2f(
-		Math::random(-1, 1), 
+		Math::random(-50, 50), 
 		0
 	);
 
@@ -24,7 +24,7 @@ Planet::Planet(sf::Vector2f position, float minMass, float maxMass)
 	body = sf::VertexArray(sf::Points, 1);	
 	body[0].position = position; 
 	this->velocity = sf::Vector2f(
-		Math::random(-1, 1),
+		Math::random(-50, 50),
 		0
 	);
 

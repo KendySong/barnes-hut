@@ -11,9 +11,16 @@
 Sandbox::Sandbox(sf::RenderWindow* window)
 {
 	/*
-	Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);
 	Galaxy galaxy(midScreen - sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
 	Galaxy galaxy2(midScreen + sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
+
+	for (size_t i = 0; i < PLANETS_SPAWN; i++)
+	{
+		m_planets.emplace_back(
+			Math::randomCircle(200) += midScreen,
+			1, 5
+		);
+	}
 	*/
 
 	p_window = window;
@@ -23,18 +30,18 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	sf::Vector2f midScreen = sf::Vector2f(WIDTH / 2, HEIGHT / 2);
 
 	m_fps = 0;
-	m_camera = Camera(500, midScreen);
+	m_camera = Camera(2000, midScreen);
 
 	srand(time(nullptr));
 	m_planets.reserve(PLANETS_SPAWN);
+	//Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);	
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
 		m_planets.emplace_back(
-			Math::randomCircle(100) += sf::Vector2f(WIDTH / 2, HEIGHT / 2),
-			1, 5
+			Math::randomCircle(200) += midScreen,
+			3
 		);
 	}
-	
 	m_nbPlanets = "Planets : " + std::to_string(m_planets.size());
 }
 
@@ -80,9 +87,9 @@ void Sandbox::update(float deltaTime)
 
 		//Generate the quadtree
 		m_root = Node(m_globalRoot);
-		for (size_t i = 0; i < m_planets.size(); i++) //for (auto& planet : m_planets)
+		for (auto& planet : m_planets)
 		{
-			m_root.insert(&m_planets[i]);
+			m_root.insert(&planet);
 		}
 	}
 	else
@@ -127,8 +134,6 @@ void Sandbox::draw() noexcept
 	}
 
 	ImGui::Begin("Debug");
-		auto x = sf::Mouse::getPosition(*p_window);
-		ImGui::InputInt2("MousePos", &x.x);
 		ImGui::TextUnformatted(m_fpsText.c_str());
 		ImGui::TextUnformatted(m_nbPlanets.c_str());
 		ImGui::Checkbox("Use BarnesHut", &m_useBarneHut);
