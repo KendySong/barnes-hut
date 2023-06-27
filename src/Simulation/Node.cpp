@@ -14,9 +14,46 @@ Node::Node(Quad quad)
 
 void Node::insert(Planet* planet)
 {
+	//Debug at 7 stars bug with srand(0)
+	if (nw.get() == nullptr && this->planet != nullptr)
+	{
+		sf::Vector2f childSize = this->quad.size /= 2.0f;
+		nw = std::unique_ptr<Node>(new Node({ this->quad.position, childSize }));
+		ne = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(childSize.x, 0), childSize }));
+		sw = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(0, childSize.y), childSize }));
+		se = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(childSize.x, childSize.y), childSize }));
+
+		auto& quads = VertexQuadTree::instance()->quads;
+		quads.push_back(nw->quad.vertices);
+		quads.push_back(ne->quad.vertices);
+		quads.push_back(sw->quad.vertices);
+		quads.push_back(se->quad.vertices);
+
+		this->insertQuadrant(this->planet);
+		this->insertQuadrant(planet);
+		this->planet = nullptr;
+
+		this->updateMassPosition();
+		return;
+	}
+
+	if (this->planet == nullptr && nw.get() == nullptr)
+	{
+		this->planet = planet;
+		this->updateMassPosition();
+	}
+
+	if (this->planet == nullptr && nw.get() != nullptr)
+	{
+		this->insertQuadrant(planet);
+		this->updateMassPosition();
+	}
+
+	/*
 	if (this->planet == nullptr)
 	{
 		this->planet = planet;
+		this->updateMassPosition();
 		return;
 	}
 
@@ -47,6 +84,7 @@ void Node::insert(Planet* planet)
 		this->updateMassPosition();
 		return;
 	}
+	*/
 }
 
 void Node::insertQuadrant(Planet* planet)
@@ -74,6 +112,13 @@ void Node::insertQuadrant(Planet* planet)
 
 void Node::updateMassPosition()
 {
+	if (nw.get() == nullptr)
+	{
+		this->mass = this->planet->mass;
+		this->position = this->planet->body[0].position;
+		return;
+	}
+
 	this->mass = 0;
 	this->position = sf::Vector2f(0, 0);
 

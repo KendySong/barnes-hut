@@ -20,19 +20,20 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	m_camera = Camera(500, midScreen);
 	m_nbPlanets = "Planets : " + std::to_string(PLANETS_SPAWN);
 
-	srand(time(nullptr));
+	srand(0);
 	m_planets.reserve(PLANETS_SPAWN);
-	Galaxy galaxy(midScreen - sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
-	Galaxy galaxy2(midScreen + sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
-	/*
+	//Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);
+	//Galaxy galaxy(midScreen - sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
+	//Galaxy galaxy2(midScreen + sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
+
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
 		m_planets.emplace_back(
 			Math::randomCircle(100) += sf::Vector2f(WIDTH / 2, HEIGHT / 2),
 			1, 5
 		);
-	}
-	*/	
+	}	
+	
 }
 
 void Sandbox::update(float deltaTime)
@@ -77,28 +78,17 @@ void Sandbox::update(float deltaTime)
 
 		//Generate the quadtree
 		m_root = Node(m_globalRoot);
+
+		/*
 		for (auto& planet : m_planets)
 		{
 			m_root.insert(&planet);
 		}
+		*/
 
-		for (auto& planet : m_planets)
+		for (size_t i = 0; i < m_planets.size(); i++)
 		{
-			sf::Vector2f planetPos = planet.body[0].position;
-			for (auto& target : m_planets)
-			{
-				if (&planet == &target)
-				{
-					continue;
-				}
-
-				sf::Vector2f targetPos = target.body[0].position;
-				float force = (planet.mass * target.mass) / std::pow(Math::distance(planetPos, targetPos), 2) * m_gravity;
-				force = force > m_maxForce ? m_maxForce : force;
-				planet.velocity += Math::unit(targetPos - planetPos) * force;
-			}
-
-			planet.body[0].position = planetPos + planet.velocity / planet.mass * deltaTime;
+			m_root.insert(&m_planets[i]);
 		}
 	}
 	else
