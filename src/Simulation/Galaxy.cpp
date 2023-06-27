@@ -15,9 +15,7 @@ Galaxy::Galaxy(sf::Vector2f position, float size, std::uint32_t nbPlanets, std::
 
 		angle -= M_PI_2;
 		sf::Vector2f targetDir = sf::Vector2f(cos(angle) * 10, sin(angle) * 10) + position;
-		planet.velocity = Math::unit(targetDir - position) * 200;
+		planet.velocity = Math::unit(targetDir - position) * 2000;
 		planets.push_back(planet);
 	}
-
-	planets.emplace_back(position, 1000);
 }

@@ -34,14 +34,8 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 
 	srand(time(nullptr));
 	m_planets.reserve(PLANETS_SPAWN);
-	//Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);	
-	for (size_t i = 0; i < PLANETS_SPAWN; i++)
-	{
-		m_planets.emplace_back(
-			Math::randomCircle(200) += midScreen,
-			3
-		);
-	}
+	Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);	
+
 	m_nbPlanets = "Planets : " + std::to_string(m_planets.size());
 }
 
@@ -90,6 +84,11 @@ void Sandbox::update(float deltaTime)
 		for (auto& planet : m_planets)
 		{
 			m_root.insert(&planet);
+		}
+
+		for (auto& planet : m_planets)
+		{
+			
 		}
 	}
 	else
