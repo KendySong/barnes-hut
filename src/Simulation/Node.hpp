@@ -15,12 +15,7 @@ public :
 	void insert(Planet* planet);
 	void insertQuadrant(Planet* planet);
 	void updateMassPosition();
-
-private:
-	static void traverse(std::vector<Planet*>* planets, Node* node);
-	static std::vector<Planet*>* getPlanets(Node* node);
 	
-
 public :
 	float mass;
 	sf::Vector2f position;
