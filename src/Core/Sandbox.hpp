@@ -27,6 +27,7 @@ private :
 	sf::Clock m_fpsInterval;
 
 	std::vector<Planet> m_planets;
+	bool m_pause;
 
 	bool m_useBarneHut;
 	Quad m_globalRoot;

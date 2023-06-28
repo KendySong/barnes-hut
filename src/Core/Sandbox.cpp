@@ -23,6 +23,7 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	*/
 
 	p_window = window;
+	m_pause = false;
 	m_useBarneHut = true;
 	sf::Vector2f midScreen = sf::Vector2f(Config::Width / 2, Config::Height / 2);
 
@@ -46,6 +47,11 @@ void Sandbox::update(float deltaTime)
 	}
 
 	m_camera.manageMovements(deltaTime);
+
+	if (m_pause)
+	{
+		return;
+	}
 
 	if (m_useBarneHut)
 	{
@@ -128,10 +134,11 @@ void Sandbox::draw() noexcept
 	ImGui::Begin("Debug");
 		ImGui::TextUnformatted(m_fpsText.c_str());
 		ImGui::TextUnformatted(m_nbPlanets.c_str());
-		
+
 		ImGui::SetNextItemOpen(true);
 		if (ImGui::TreeNode("Simulation"))
 		{
+			ImGui::Checkbox("Pause", &m_pause);
 			ImGui::DragFloat("Force limit", &Config::maxForce, 0.01f);
 			ImGui::DragFloat("Gravity", &Config::gravity, 0.1f);
 			ImGui::TreePop();
