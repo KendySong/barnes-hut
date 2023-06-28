@@ -58,18 +58,21 @@ void Node::insert(Planet* planet)
 
 void Node::computeForce(Planet* planet)
 {
-	if (this->planet == planet || (!this->planet && !this->nw.get()))
+	bool isPlanetDefine = this->planet;
+	bool haveChild = this->nw.get();
+
+	if (this->planet == planet || (!isPlanetDefine && !haveChild))
 	{
 		return;
 	}
 
-	if (this->planet && !nw.get())
+	if (isPlanetDefine && !haveChild)
 	{
 		planet->velocity += Math::force(planet, this->planet);
 		return;
 	}
 
-	if (this->quad.size.x / Math::distance(planet->body[0].position, this->position) < Config::thresholdCompute)
+	if (this->quad.size.x / Math::approximateDistance(planet->body[0].position, this->position) < Config::thresholdCompute)
 	{
 		planet->velocity += Math::force(planet, this->position, this->mass);
 		return;
