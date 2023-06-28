@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "Math.hpp"
+#include "../Config.hpp"
 
 float Math::length(sf::Vector2f v) noexcept
 {
@@ -41,4 +42,23 @@ float Math::interpolate(float a, float b, float t) noexcept
 sf::Vector2f operator*(sf::Vector2f v, float t)
 {
 	return { v.x * t, v.y * t };
+}
+
+sf::Vector2f Math::force(Planet* a, Planet* b) noexcept
+{
+	const sf::Vector2f& targetPos = b->body[0].position;
+	const sf::Vector2f& planetPos = a->body[0].position;
+
+	float force = (a->mass * b->mass) / std::pow(Math::distance(planetPos, targetPos), 2) * Config::gravity;
+	force = force > Config::maxForce ? Config::maxForce : force;
+	return Math::unit(targetPos - planetPos) * force;
+}
+
+sf::Vector2f Math::force(Planet* a, const sf::Vector2f& position, float mass) noexcept
+{
+	const sf::Vector2f& planetPos = a->body[0].position;
+
+	float force = (a->mass * mass) / std::pow(Math::distance(planetPos, position), 2) * Config::gravity;
+	force = force > Config::maxForce ? Config::maxForce : force;
+	return Math::unit(position - planetPos) * force;
 }

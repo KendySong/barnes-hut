@@ -1,9 +1,9 @@
 #include <iostream>
 
 #include "Node.hpp"
+#include "../Config.hpp"
 #include "../Math/Math.hpp"
 #include "VertexQuadTree.hpp"
-#include "../Config.hpp"
 
 Node::Node(Quad quad)
 {
@@ -55,13 +55,32 @@ void Node::insert(Planet* planet)
 
 void Node::computeForce(Planet* planet)
 {
-	if (this->planet != nullptr && this->planet != planet)
+	if (this->planet == planet || (this->planet == nullptr && this->nw.get() == nullptr))
 	{
-		sf::Vector2f targetPos = this->planet->body[0].position;
-		float force = (planet->mass * this->planet->mass) / std::pow(Math::distance(planet->body[0].position, targetPos), 2) * Config::gravity;
-		force = force > Config::maxForce ? Config::maxForce : force;
-		planet->velocity += Math::unit(targetPos - planet->body[0].position) * force;
+		return;
 	}
+
+	if (this->planet != nullptr && nw.get() == nullptr)
+	{
+		planet->velocity += Math::force(planet, this->planet);
+		return;
+	}
+
+	if (this->canComputeIntern(planet))
+	{
+		planet->velocity += Math::force(planet, this->position, this->mass);
+		return;
+	}
+	
+	this->nw.get()->computeForce(planet);
+	this->ne.get()->computeForce(planet);
+	this->sw.get()->computeForce(planet);
+	this->se.get()->computeForce(planet);
+}
+
+bool Node::canComputeIntern(Planet* planet)
+{
+	return this->quad.size.x / Math::distance(planet->body[0].position, this->position) < Config::thresholdCompute;
 }
 
 void Node::insertQuadrant(Planet* planet)

@@ -16,4 +16,6 @@ public :
 
 	static float gravity;
 	static float maxForce;
+	static float thresholdCompute;
+	static bool displayQuadtree;
 };

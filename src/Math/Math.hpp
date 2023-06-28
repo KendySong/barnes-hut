@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/System.hpp>
 
+#include "../Simulation/Planet.hpp"
+
 class Math
 {
 public :
@@ -11,6 +13,9 @@ public :
 
 	static sf::Vector2f randomCircle(float radius) noexcept;
 	static float interpolate(float a, float b, float t) noexcept;
+
+	static sf::Vector2f force(Planet* a, Planet* b) noexcept;
+	static sf::Vector2f force(Planet* a, const sf::Vector2f& position, float mass) noexcept;
 };
 
 sf::Vector2f operator*(sf::Vector2f v, float t);

@@ -19,8 +19,8 @@ private :
 	void updateMassPosition();
 	void insertQuadrant(Planet* planet);
 	void getChildPlanet(Node* node, std::vector<Planet*>& planets);
+	bool canComputeIntern(Planet* planet);
 
-	
 public :
 	float mass;
 	sf::Vector2f position;

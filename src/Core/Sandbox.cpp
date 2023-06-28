@@ -32,7 +32,6 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	srand(time(nullptr));
 	m_planets.reserve(Config::PlanetSpwan);
 	Galaxy galaxy(midScreen, 100, Config::PlanetSpwan, m_planets);
-
 	m_nbPlanets = "Planets : " + std::to_string(m_planets.size());
 }
 
@@ -54,7 +53,8 @@ void Sandbox::update(float deltaTime)
 		m_globalRoot.position = m_planets[0].body[0].position;
 		m_globalRoot.size = sf::Vector2f(1, 1);
 
-		//Construct the quad that contains all particules by getting the limits
+		//Construct the quad that contains all particules by getting
+		//the position of the planets at the extremity of the group
 		for (auto& planet : m_planets)
 		{
 			const sf::Vector2f& position = planet.body[0].position;
@@ -85,29 +85,24 @@ void Sandbox::update(float deltaTime)
 
 		for (auto& planet : m_planets)
 		{
-			//m_root.computeForce(&planet);
-			//planet.body[0].position = planet.body[0].position + planet.velocity / planet.mass * deltaTime;
+			m_root.computeForce(&planet);
+			planet.body[0].position = planet.body[0].position + planet.velocity / planet.mass * deltaTime;
 		}
 	}
 	else
 	{
 		for (auto& planet : m_planets)
 		{
-			sf::Vector2f planetPos = planet.body[0].position;
 			for (auto& target : m_planets)
 			{
 				if (&planet == &target)
 				{
 					continue;
 				}
-
-				sf::Vector2f targetPos = target.body[0].position;
-				float force = (planet.mass * target.mass) / std::pow(Math::distance(planetPos, targetPos), 2) * Config::gravity;
-				force = force > Config::maxForce ? Config::maxForce : force;
-				planet.velocity += Math::unit(targetPos - planetPos) * force;
+				planet.velocity += Math::force(&planet, &target);
 			}
 
-			planet.body[0].position = planetPos + planet.velocity / planet.mass * deltaTime;
+			planet.body[0].position = planet.body[0].position + planet.velocity / planet.mass * deltaTime;
 		}
 	}	
 }
@@ -115,7 +110,7 @@ void Sandbox::update(float deltaTime)
 void Sandbox::draw() noexcept
 {
 	p_window->setView(m_camera.getView());
-	if (m_useBarneHut)
+	if (Config::displayQuadtree && m_useBarneHut)
 	{
 		p_window->draw(m_globalRoot.vertices);
 		auto& vertices = VertexQuadTree::instance()->quads;
@@ -133,8 +128,22 @@ void Sandbox::draw() noexcept
 	ImGui::Begin("Debug");
 		ImGui::TextUnformatted(m_fpsText.c_str());
 		ImGui::TextUnformatted(m_nbPlanets.c_str());
-		ImGui::Checkbox("Use BarnesHut", &m_useBarneHut);
-		ImGui::DragFloat("Force limit", &Config::maxForce, 0.01f);
-		ImGui::DragFloat("Gravity", &Config::gravity, 0.1f);
+		
+		ImGui::SetNextItemOpen(true);
+		if (ImGui::TreeNode("Simulation"))
+		{
+			ImGui::DragFloat("Force limit", &Config::maxForce, 0.01f);
+			ImGui::DragFloat("Gravity", &Config::gravity, 0.1f);
+			ImGui::TreePop();
+		}
+
+		ImGui::SetNextItemOpen(true);
+		if (ImGui::TreeNode("Barnes Hut"))
+		{
+			ImGui::Checkbox("Use BarnesHut", &m_useBarneHut);
+			ImGui::SliderFloat("Threshold compute extern node", &Config::thresholdCompute, 0, 15);
+			ImGui::Checkbox("Display Quadtree", &Config::displayQuadtree);
+			ImGui::TreePop();
+		}	
 	ImGui::End();
 }
