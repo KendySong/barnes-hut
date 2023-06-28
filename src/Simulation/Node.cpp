@@ -18,20 +18,23 @@ Node::Node(Quad quad)
 
 void Node::insert(Planet* planet)
 {
-	if (nw.get() == nullptr && this->planet != nullptr)
+	if (!nw.get() && this->planet)
 	{
-		sf::Vector2f childSize = this->quad.size / 2.0f;
-		nw = std::unique_ptr<Node>(new Node(Quad(this->quad.position, childSize)));
-		ne = std::unique_ptr<Node>(new Node(Quad(this->quad.position + sf::Vector2f(childSize.x, 0), childSize)));
-		sw = std::unique_ptr<Node>(new Node(Quad(this->quad.position + sf::Vector2f(0, childSize.y), childSize)));
-		se = std::unique_ptr<Node>(new Node(Quad(this->quad.position + childSize, childSize)));
+		const sf::Vector2f childSize = this->quad.size / 2.0f;
+		nw = std::unique_ptr<Node>(new Node({ this->quad.position, childSize }));
+		ne = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(childSize.x, 0), childSize }));
+		sw = std::unique_ptr<Node>(new Node({ this->quad.position + sf::Vector2f(0, childSize.y), childSize }));
+		se = std::unique_ptr<Node>(new Node({ this->quad.position + childSize, childSize }));
 		
-		auto& quads = VertexQuadTree::instance()->quads;
-		quads.push_back(nw->quad.vertices);
-		quads.push_back(ne->quad.vertices);
-		quads.push_back(sw->quad.vertices);
-		quads.push_back(se->quad.vertices);
-
+		if (Config::displayQuadtree)
+		{
+			auto& quads = VertexQuadTree::instance()->quads;
+			quads.emplace_back(nw->quad.vertices);
+			quads.emplace_back(ne->quad.vertices);
+			quads.emplace_back(sw->quad.vertices);
+			quads.emplace_back(se->quad.vertices);
+		}
+		
 		this->insertQuadrant(this->planet);
 		this->insertQuadrant(planet);
 		this->planet = nullptr;
@@ -40,13 +43,13 @@ void Node::insert(Planet* planet)
 		return;
 	}
 
-	if (this->planet == nullptr && nw.get() == nullptr)
+	if (!this->planet && !nw.get())
 	{
 		this->planet = planet;
 		this->updateMassPosition();
 	}
 
-	if (this->planet == nullptr && nw.get() != nullptr)
+	if (!this->planet && nw.get())
 	{
 		this->insertQuadrant(planet);
 		this->updateMassPosition();
@@ -55,18 +58,18 @@ void Node::insert(Planet* planet)
 
 void Node::computeForce(Planet* planet)
 {
-	if (this->planet == planet || (this->planet == nullptr && this->nw.get() == nullptr))
+	if (this->planet == planet || (!this->planet && !this->nw.get()))
 	{
 		return;
 	}
 
-	if (this->planet != nullptr && nw.get() == nullptr)
+	if (this->planet && !nw.get())
 	{
 		planet->velocity += Math::force(planet, this->planet);
 		return;
 	}
 
-	if (this->canComputeIntern(planet))
+	if (this->quad.size.x / Math::distance(planet->body[0].position, this->position) < Config::thresholdCompute)
 	{
 		planet->velocity += Math::force(planet, this->position, this->mass);
 		return;
@@ -76,11 +79,6 @@ void Node::computeForce(Planet* planet)
 	this->ne.get()->computeForce(planet);
 	this->sw.get()->computeForce(planet);
 	this->se.get()->computeForce(planet);
-}
-
-bool Node::canComputeIntern(Planet* planet)
-{
-	return this->quad.size.x / Math::distance(planet->body[0].position, this->position) < Config::thresholdCompute;
 }
 
 void Node::insertQuadrant(Planet* planet)
@@ -115,16 +113,17 @@ void Node::insertQuadrant(Planet* planet)
 void Node::updateMassPosition()
 {
 	this->mass = 0;
-	this->position = sf::Vector2f(0, 0);
+	this->position.x = 0;
+	this->position.y = 0;
 
-	std::vector<Planet*> planets;
-	this->getChildPlanet(this, planets);
-	for (auto& planet : planets)
+	childPlanets.clear();
+	this->getChildPlanet(this, childPlanets);
+	for (auto& planet : childPlanets)
 	{
 		this->mass += planet->mass;
 	}
 
-	for (auto& planet : planets)
+	for (auto& planet : childPlanets)
 	{
 		this->position += planet->body[0].position * planet->mass;
 	}
@@ -134,14 +133,14 @@ void Node::updateMassPosition()
 
 void Node::getChildPlanet(Node* node, std::vector<Planet*>& planets)
 {
-	if (node == nullptr)
+	if (!node)
 	{
 		return;
 	}
 
-	if (node->planet != nullptr)
+	if (node->planet)
 	{
-		planets.push_back(node->planet);
+		planets.emplace_back(node->planet);
 	}
 	
 	this->getChildPlanet(node->nw.get(), planets);

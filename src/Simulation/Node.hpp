@@ -19,16 +19,18 @@ private :
 	void updateMassPosition();
 	void insertQuadrant(Planet* planet);
 	void getChildPlanet(Node* node, std::vector<Planet*>& planets);
-	bool canComputeIntern(Planet* planet);
 
 public :
 	float mass;
 	sf::Vector2f position;
-	Planet* planet;
+	
 	Quad quad;
+	Planet* planet;
+	std::vector<Planet*> childPlanets;
 
 	std::unique_ptr<Node> nw;
 	std::unique_ptr<Node> ne;
 	std::unique_ptr<Node> sw;
 	std::unique_ptr<Node> se;
+	
 };

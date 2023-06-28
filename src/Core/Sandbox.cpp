@@ -11,8 +11,8 @@
 Sandbox::Sandbox(sf::RenderWindow* window)
 {
 	/*
-	Galaxy galaxy(midScreen - sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
-	Galaxy galaxy2(midScreen + sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
+	Galaxy galaxy(midScreen - sf::Vector2f(Config::Width / 8, Config::Height / 8), 100, Config::PlanetSpwan, m_planets);
+	Galaxy galaxy2(midScreen + sf::Vector2f(Config::Width / 8, Config::Height / 8), 100, Config::PlanetSpwan, m_planets);
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
 		m_planets.emplace_back(
@@ -23,7 +23,7 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	*/
 
 	p_window = window;
-	m_pause = false;
+	m_pause = true;
 	m_useBarneHut = true;
 	sf::Vector2f midScreen = sf::Vector2f(Config::Width / 2, Config::Height / 2);
 
@@ -148,7 +148,7 @@ void Sandbox::draw() noexcept
 		if (ImGui::TreeNode("Barnes Hut"))
 		{
 			ImGui::Checkbox("Use BarnesHut", &m_useBarneHut);
-			ImGui::SliderFloat("Threshold compute extern node", &Config::thresholdCompute, 0, 15);
+			ImGui::SliderFloat("Threshold compute extern node", &Config::thresholdCompute, 0, 100);
 			ImGui::Checkbox("Display Quadtree", &Config::displayQuadtree);
 			ImGui::TreePop();
 		}	
