@@ -13,7 +13,6 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	/*
 	Galaxy galaxy(midScreen - sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
 	Galaxy galaxy2(midScreen + sf::Vector2f(WIDTH/8, HEIGHT/8), 100, PLANETS_SPAWN, m_planets);
-
 	for (size_t i = 0; i < PLANETS_SPAWN; i++)
 	{
 		m_planets.emplace_back(
@@ -24,17 +23,15 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	*/
 
 	p_window = window;
-	m_gravity = GRAVITY;
-	m_maxForce = MAX_FORCE;
 	m_useBarneHut = true;
-	sf::Vector2f midScreen = sf::Vector2f(WIDTH / 2, HEIGHT / 2);
+	sf::Vector2f midScreen = sf::Vector2f(Config::Width / 2, Config::Height / 2);
 
 	m_fps = 0;
 	m_camera = Camera(2000, midScreen);
 
 	srand(time(nullptr));
-	m_planets.reserve(PLANETS_SPAWN);
-	Galaxy galaxy(midScreen, 100, PLANETS_SPAWN, m_planets);	
+	m_planets.reserve(Config::PlanetSpwan);
+	Galaxy galaxy(midScreen, 100, Config::PlanetSpwan, m_planets);
 
 	m_nbPlanets = "Planets : " + std::to_string(m_planets.size());
 }
@@ -71,8 +68,8 @@ void Sandbox::update(float deltaTime)
 
 		//Compute the size of the box and add border
 		m_globalRoot.size = m_globalRoot.size - m_globalRoot.position;
-		m_globalRoot.position -= BORDER_OFFSET;
-		m_globalRoot.size += BORDER_OFFSET_SIZE;
+		m_globalRoot.position -= Config::BorderOffset;
+		m_globalRoot.size += Config::BorderOffsetSize;
 
 		//Set the quad to a square
 		m_globalRoot.size.x = m_globalRoot.size.x < m_globalRoot.size.y ? m_globalRoot.size.y : m_globalRoot.size.x;
@@ -88,7 +85,8 @@ void Sandbox::update(float deltaTime)
 
 		for (auto& planet : m_planets)
 		{
-			
+			//m_root.computeForce(&planet);
+			//planet.body[0].position = planet.body[0].position + planet.velocity / planet.mass * deltaTime;
 		}
 	}
 	else
@@ -104,8 +102,8 @@ void Sandbox::update(float deltaTime)
 				}
 
 				sf::Vector2f targetPos = target.body[0].position;
-				float force = (planet.mass * target.mass) / std::pow(Math::distance(planetPos, targetPos), 2) * m_gravity;
-				force = force > m_maxForce ? m_maxForce : force;
+				float force = (planet.mass * target.mass) / std::pow(Math::distance(planetPos, targetPos), 2) * Config::gravity;
+				force = force > Config::maxForce ? Config::maxForce : force;
 				planet.velocity += Math::unit(targetPos - planetPos) * force;
 			}
 
@@ -136,7 +134,7 @@ void Sandbox::draw() noexcept
 		ImGui::TextUnformatted(m_fpsText.c_str());
 		ImGui::TextUnformatted(m_nbPlanets.c_str());
 		ImGui::Checkbox("Use BarnesHut", &m_useBarneHut);
-		ImGui::DragFloat("Force limit", &m_maxForce, 0.01f);
-		ImGui::DragFloat("Gravity", &m_gravity, 0.1f);
+		ImGui::DragFloat("Force limit", &Config::maxForce, 0.01f);
+		ImGui::DragFloat("Gravity", &Config::gravity, 0.1f);
 	ImGui::End();
 }

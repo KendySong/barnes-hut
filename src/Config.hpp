@@ -2,12 +2,18 @@
 #include <cstdint>
 #include <SFML/Graphics.hpp>
 
-const std::uint32_t WIDTH = 1280;
-const std::uint32_t HEIGHT = 720;
+#include "Math/Math.hpp"
 
-const std::uint32_t PLANETS_SPAWN = 150;
-const float GRAVITY = 500;
-const float MAX_FORCE = 0.01;
+class Config
+{
+public :
+	static const std::uint32_t Width;
+	static const std::uint32_t Height;
+	static const std::uint32_t PlanetSpwan;
+	
+	static const sf::Vector2f BorderOffset;
+	static const sf::Vector2f BorderOffsetSize;
 
-const sf::Vector2f BORDER_OFFSET = sf::Vector2f(10, 10);
-const sf::Vector2f BORDER_OFFSET_SIZE = BORDER_OFFSET + BORDER_OFFSET;
+	static float gravity;
+	static float maxForce;
+};

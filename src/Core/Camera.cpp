@@ -3,7 +3,7 @@
 
 Camera::Camera(float speed, const sf::Vector2f& position) : m_speed(speed), m_position(position)
 {
-	m_view = sf::View(m_position, sf::Vector2f(WIDTH, HEIGHT));
+	m_view = sf::View(m_position, sf::Vector2f(Config::Width, Config::Height));
 }
 
 void Camera::manageMovements(float deltaTime)

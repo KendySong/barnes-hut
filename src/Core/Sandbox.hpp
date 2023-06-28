@@ -27,8 +27,6 @@ private :
 	sf::Clock m_fpsInterval;
 
 	std::vector<Planet> m_planets;
-	float m_gravity;
-	float m_maxForce;
 
 	bool m_useBarneHut;
 	Quad m_globalRoot;

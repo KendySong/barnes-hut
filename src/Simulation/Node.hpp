@@ -13,11 +13,13 @@ public :
 	Node() = default;
 	Node(Quad quad);
 	void insert(Planet* planet);
-	void insertQuadrant(Planet* planet);
-	void updateMassPosition();
+	void computeForce(Planet* planet);
 
 private :
+	void updateMassPosition();
+	void insertQuadrant(Planet* planet);
 	void getChildPlanet(Node* node, std::vector<Planet*>& planets);
+
 	
 public :
 	float mass;

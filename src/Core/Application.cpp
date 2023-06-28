@@ -8,7 +8,7 @@
 Application* Application::s_app = nullptr;
 Application::Application()
 {
-	p_window = new sf::RenderWindow(sf::VideoMode(WIDTH, HEIGHT), "Barnes Hut Simulation");
+	p_window = new sf::RenderWindow(sf::VideoMode(Config::Width, Config::Height), "Barnes Hut Simulation");
 	ImGui::SFML::Init(*p_window);
 }
 

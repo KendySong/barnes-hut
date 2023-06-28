@@ -1,7 +1,9 @@
 #include <iostream>
 
 #include "Node.hpp"
+#include "../Math/Math.hpp"
 #include "VertexQuadTree.hpp"
+#include "../Config.hpp"
 
 Node::Node(Quad quad)
 {
@@ -48,6 +50,17 @@ void Node::insert(Planet* planet)
 	{
 		this->insertQuadrant(planet);
 		this->updateMassPosition();
+	}
+}
+
+void Node::computeForce(Planet* planet)
+{
+	if (this->planet != nullptr && this->planet != planet)
+	{
+		sf::Vector2f targetPos = this->planet->body[0].position;
+		float force = (planet->mass * this->planet->mass) / std::pow(Math::distance(planet->body[0].position, targetPos), 2) * Config::gravity;
+		force = force > Config::maxForce ? Config::maxForce : force;
+		planet->velocity += Math::unit(targetPos - planet->body[0].position) * force;
 	}
 }
 
