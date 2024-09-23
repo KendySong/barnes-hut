@@ -2,7 +2,7 @@
 
 const std::uint32_t Config::Width = 1280;
 const std::uint32_t Config::Height = 720;
-const std::uint32_t Config::PlanetSpwan = 500;
+const std::uint32_t Config::PlanetSpwan = 100;
 
 const sf::Vector2f Config::BorderOffset = sf::Vector2f(10, 10);
 const sf::Vector2f Config::BorderOffsetSize = Config::BorderOffset * 2;

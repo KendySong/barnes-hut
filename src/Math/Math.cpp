@@ -14,7 +14,7 @@ float Math::distance(sf::Vector2f a, sf::Vector2f b) noexcept
 	return Math::length(b - a);
 }
 
-float Math::manhattanDistance(sf::Vector2f a, sf::Vector2f b) noexcept
+float Math::approximateDistance(sf::Vector2f a, sf::Vector2f b) noexcept
 {
 	auto&v = b - a;
 	return abs(v.x) + abs(v.y);

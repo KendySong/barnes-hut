@@ -34,6 +34,7 @@ Sandbox::Sandbox(sf::RenderWindow* window)
 	m_planets.reserve(Config::PlanetSpwan);
 	Galaxy galaxy(midScreen, 100, Config::PlanetSpwan, m_planets);
 	m_nbPlanets = "Planets : " + std::to_string(m_planets.size());
+	_pixels = sf::VertexArray(sf::PrimitiveType::Points, Config::PlanetSpwan);
 }
 
 void Sandbox::update(float deltaTime)
@@ -126,10 +127,11 @@ void Sandbox::draw() noexcept
 		}
 	}
 
-	for (auto& planet : m_planets)
+	for (size_t i = 0; i < m_planets.size(); i++)
 	{
-		p_window->draw(planet.body);
+		_pixels[i] = m_planets[i].body[0];
 	}
+	p_window->draw(_pixels);
 
 	ImGui::Begin("Debug");
 		ImGui::TextUnformatted(m_fpsText.c_str());
